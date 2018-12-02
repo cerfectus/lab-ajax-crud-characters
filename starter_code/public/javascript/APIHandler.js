@@ -1,82 +1,78 @@
-const allData = (name, occupation, weapon, cartoon) => {
-  $(".characters-container").append(`<div class="character-info">
-  <div class="name">Character Name</div>
-  <div class="occupation">Character Occupation</div>
-  <div class="cartoon">Is a Cartoon?</div>
-  <div class="weapon">Character Weapon</div>`)
-}
 class APIHandler {
   constructor (baseUrl) {
+  constructor(baseUrl) {
     this.BASE_URL = baseUrl;
   }
-
-  getFullList () {
-    axios.get(`${this.BASE_URL}/characters`)
-    .then(res => {
-        console.log(res.data)
-        res.data.forEach(e => {
-          allData(e.name, e.occupation, e.weapon, e.cartoon)
-        })
-    })
-    
+   getFullList () {
+   getFullList() {
+    axios.get(`${this.BASE_URL}/characters`).then(res =>
+      res.data.forEach(character => {
+        createCard(
+          character.name,
+          character.occupation,
+          character.weapon,
+          character.cartoon
+        );
+      })
+    );
   }
-
-  getOneRegister (charID) {
-    axios.get(`${this.BASE_URL}/characters/${charID}`)
-    .then(res => {
-        console.log(res.data)
-        res.data.forEach(e => {
-          allData(e.name, e.occupation, e.weapon, e.cartoon)
-        })
-    })
+   getOneRegister () {
+   getOneRegister(id) {
+    axios.get(`${this.BASE_URL}/characters/${id}`).then(res => {
+      createCard(
+        res.data.name,
+        res.data.occupation,
+        res.data.weapon,
+        res.data.cartoon
+      );
+    });
   }
-
-  createOneRegister (name, occupation, weapon, cartoon) {
-    const newChar = {
+   createOneRegister () {
+  createOneRegister(name, occupation, weapon, cartoon) {
+    let newCharacter = {
       name: name,
       occupation: occupation,
       weapon: weapon,
-      cartoon: cartoon,
-    }
-      axios.post(`${this.BASE_URL}/characters`,newChar)
-      .then( res => {
-
-      })
+      cartoon: cartoon
+    };
+     axios.post(`${this.BASE_URL}/characters`, newCharacter)
+      .then(() => {
+        $("#send-data").css("background-color", "green");
         this.getFullList();
-
-      }
-    
+      })
+      .catch(err => {
+        $("#send-data").css("background-color", "red");
+        console.log(err);
+      });
   }
-
-  updateOneRegister () {
-    const updateChar = {
+   updateOneRegister () {
+  updateOneRegister(id, name, occupation, weapon, cartoon) {
+    let character = {
       name: name,
       occupation: occupation,
       weapon: weapon,
-      cartoon: cartoon,
-    }
-      axios.post(`${this.BASE_URL}/characters`,updateChar)
-      .then( res => {
-
-      })
+      cartoon: cartoon
+    };
+     axios.patch(`${this.BASE_URL}/characters/${id}`, character)
+      .then(() => {
+        $("#send-data").last().css("background-color", "green");
         this.getFullList();
-
-      };
-
-
-  deleteOneRegister () {
-    const newChar = {
-      name: name,
-      occupation: occupation,
-      weapon: weapon,
-      cartoon: cartoon,
-    }
-      axios.post(`${this.BASE_URL}/characters`,newChar)
-      .then( res => {
-
       })
+      .catch(err => {
+        $("#send-data").last().css("background-color", "red");
+        console.log(err);
+      });
+  }
+   deleteOneRegister () {
+   deleteOneRegister(id) {
+    axios
+      .delete(`${this.BASE_URL}/characters/${id}`)
+      .then(() => {
+        $("#delete-one").css("background-color", "green");
         this.getFullList();
-
-      }
-  
-
+      })
+      .catch(() => {
+        $("#delete-one").css("background-color", "red");
+      });
+  }
+}
